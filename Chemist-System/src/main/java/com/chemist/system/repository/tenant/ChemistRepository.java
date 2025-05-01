@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChemistRepository extends JpaRepository<Chemist, Long> {
-    @Query("SELECT c FROM Chemist c WHERE c.tenantId = :tenantId")
-    List<Chemist> findAllByTenantId(@Param("tenantId") String tenantId);
+    @Query("SELECT c FROM Chemist c WHERE c.chemistId = :chemistId")
+    List<Chemist> findAllByChemistId(@Param("chemistId") Long chemistId);
 
-    Optional<Chemist> findByChemistId(String tenantId);
+    Optional<Chemist> findByChemistId(Long chemistId);
 }
