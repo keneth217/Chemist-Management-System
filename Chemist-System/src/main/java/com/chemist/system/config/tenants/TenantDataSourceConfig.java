@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
-
 import javax.sql.DataSource;
+
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.chemist.system.repository.tenant",
@@ -21,18 +22,21 @@ import javax.sql.DataSource;
 public class TenantDataSourceConfig {
 
     @Autowired
-    TenantDataSourceProvider provider;
+    @Lazy
+    private TenantDataSourceProvider provider;
 
     @Bean
     public DataSource tenantRoutingDataSource() {
         TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
         routingDataSource.setTargetDataSources(provider.getAllDataSources());
+        routingDataSource.setDefaultTargetDataSource(provider.getDefaultDataSource());
         return routingDataSource;
     }
 
     @Bean(name = "tenantEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean tenantEntityManagerFactory(
-            EntityManagerFactoryBuilder builder, @Qualifier("tenantRoutingDataSource") DataSource dataSource) {
+            EntityManagerFactoryBuilder builder,
+            @Qualifier("tenantRoutingDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
                 .packages("com.chemist.system.models")
