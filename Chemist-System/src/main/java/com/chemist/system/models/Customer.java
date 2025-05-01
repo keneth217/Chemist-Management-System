@@ -1,31 +1,48 @@
 package com.chemist.system.models;
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "customers")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;                   // Primary key
+    private Long id;
 
     @Column(nullable = false)
-    private String name;               // Full name
+    private String name;
 
     @Column(nullable = false, unique = true)
-    private String phone;              // Contact number
+    private String phone;
 
     @Column(unique = true)
-    private String email;              // Optional email
+    private String email;
 
     @Column(columnDefinition = "JSON")
-    private String allergies;          // JSON array: ["Penicillin", "Sulfa"]
+    private String allergies;
 
     @Column(name = "loyalty_points", columnDefinition = "INT DEFAULT 0")
-    private int loyaltyPoints;         // Rewards points
+    private int loyaltyPoints;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Prescription> prescriptions; // JPA relationship
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Prescription> prescriptions = new ArrayList<>();
+
+    public void addPrescription(Prescription prescription) {
+        prescriptions.add(prescription);
+        prescription.setCustomer(this);
+    }
+
+    public void removePrescription(Prescription prescription) {
+        prescriptions.remove(prescription);
+        prescription.setCustomer(null);
+    }
 }
