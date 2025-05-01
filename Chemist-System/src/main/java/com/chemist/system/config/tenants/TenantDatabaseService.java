@@ -22,7 +22,8 @@ public class TenantDatabaseService {
 
     private final JdbcTemplate centralJdbcTemplate;
     private final TenantDataSourceProvider provider;
-    private final ChemistRegistrationStatusService.UserService userService;
+    private final ChemistRegistrationStatusService chemistRegistrationStatusService;
+    private final UserService userService;
     private final ChemistService chemistService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
@@ -36,7 +37,7 @@ public class TenantDatabaseService {
     @Autowired
     public TenantDatabaseService(JdbcTemplate centralJdbcTemplate,
                                  TenantDataSourceProvider provider,
-                                 ChemistRegistrationStatusService.UserService userService,
+                                 ChemistRegistrationStatusService chemistRegistrationStatusService, UserService userService,
                                  ChemistService chemistService,
                                  RoleRepository roleRepository,
                                  PasswordEncoder encoder,
@@ -45,6 +46,7 @@ public class TenantDatabaseService {
                                  ChemistRegistrationStatusService statusService) {
         this.centralJdbcTemplate = centralJdbcTemplate;
         this.provider = provider;
+        this.chemistRegistrationStatusService = chemistRegistrationStatusService;
         this.userService = userService;
         this.chemistService = chemistService;
         this.roleRepository = roleRepository;
@@ -97,10 +99,10 @@ public class TenantDatabaseService {
         admin.setPassword(encoder.encode(chemist.getChemistCode()));
         admin.setChemistId(String.valueOf(chemist.getChemistId()));
         admin.setChemistName(chemist.getChemistName());
-        Set<Role> roles = new HashSet<>();
-        Role adminRole = roleRepository.findByName(ERole.ADMIN)
+        Set<UserRole> roles = new HashSet<>();
+        UserRole adminRole = roleRepository.findByName(String.valueOf(ERole.ADMIN))
                 .orElseGet(() -> {
-                    Role newRole = new Role();
+                    UserRole newRole = new UserRole();
                     return roleRepository.save(newRole);
                 });
         roles.add(adminRole);
