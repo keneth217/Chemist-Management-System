@@ -1,31 +1,37 @@
 package com.chemist.system.models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "prescriptions")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;                   // Primary key (auto-increment)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @Column(nullable = false)
-    private String customerId;         // Links to Customer (e.g., "cust-123")
-
-    @Column(nullable = false)
-    private String doctorId;           // Doctor's license number
+    private String doctorId;
 
     @Column(columnDefinition = "JSON")
-    private String drugs;              // JSON array: [{ drugId: 1, dosage: "500mg", duration: "7 days" }]
+    private String drugs;
 
     @Column(nullable = false)
-    private LocalDate date;            // Prescription issue date
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
-    private PrescriptionStatus status; // Enum: PENDING, FULFILLED, CANCELLED
+    private PrescriptionStatus status;
 
     @Column(columnDefinition = "TEXT")
-    private String notes;              // Doctor's instructions (e.g., "Take after meals")
+    private String notes;
 }
