@@ -1,0 +1,16 @@
+package com.chemist.system.repository.tenant;
+
+import com.chemist.system.models.Chemist;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ChemistRepository extends JpaRepository<Chemist, Long> {
+    @Query("SELECT c FROM Chemist c WHERE c.tenantId = :tenantId")
+    List<Chemist> findAllByTenantId(@Param("tenantId") String tenantId);
+
+    Optional<Chemist> findByChemistId(String tenantId);
+}
