@@ -25,16 +25,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String tenantId = TenantContext.getCurrentTenant();
+        String chemistId = TenantContext.getCurrentTenant();
 
-        if (tenantId == null || tenantId.isBlank()) {
+        if (chemistId == null || chemistId.isBlank()) {
             throw new TenantNotResolvedException("Tenant context not resolved for authentication");
         }
 
         try {
-            return "master".equalsIgnoreCase(tenantId)
+            return "master".equalsIgnoreCase(chemistId)
                     ? loadMasterUser(username)
-                    : loadTenantUser(username, tenantId);
+                    : loadTenantUser(username, Long.valueOf(chemistId));
         } catch (UsernameNotFoundException e) {
             throw e;
         } catch (ChemistNotActivatedException e) {
@@ -53,12 +53,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Master user not found: " + username));
     }
 
-    private UserDetails loadTenantUser(String username, String tenantId) {
-        Chemist chemist = chemistRepository.findByChemistId(tenantId)
-                .orElseThrow(() -> new UsernameNotFoundException("Chemist tenant not found: " + tenantId));
+    private UserDetails loadTenantUser(String username, Long chemistId) {
+        Chemist chemist = chemistRepository.findByChemistId(chemistId)
+                .orElseThrow(() -> new UsernameNotFoundException("Chemist tenant not found: " + chemistId));
 
         if (Boolean.FALSE.equals(chemist.getActivated())) {
-            throw new ChemistNotActivatedException("Chemist account not activated: " + tenantId);
+            throw new ChemistNotActivatedException("Chemist account not activated: " + chemistId);
         }
 
         return userRepository.findByPhoneNo(username)
