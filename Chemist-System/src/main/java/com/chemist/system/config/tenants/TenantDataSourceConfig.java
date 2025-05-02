@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.chemist.system.repository.tenant",
+        basePackages = "com.chemist.system.tenant.repository",
         entityManagerFactoryRef = "tenantEntityManagerFactory",
         transactionManagerRef = "tenantTransactionManager"
 )
@@ -39,7 +39,7 @@ public class TenantDataSourceConfig {
             @Qualifier("tenantRoutingDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.chemist.system.models")
+                .packages("com.chemist.system.tenant.model")
                 .persistenceUnit("tenant")
                 .build();
     }
