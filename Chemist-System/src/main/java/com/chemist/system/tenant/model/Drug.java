@@ -1,9 +1,8 @@
-package com.chemist.system.models;
+package com.chemist.system.tenant.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 @Entity
 @Table(name = "drugs")
 public class Drug {
