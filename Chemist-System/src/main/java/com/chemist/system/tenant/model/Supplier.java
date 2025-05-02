@@ -1,4 +1,4 @@
-package com.chemist.system.models;
+package com.chemist.system.tenant.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 @Entity
