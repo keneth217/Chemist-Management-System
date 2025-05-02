@@ -1,10 +1,13 @@
 package com.chemist.system.config.tenants;
 
-import com.chemist.system.dto.ChemistProfileDTO;
-import com.chemist.system.models.*;
+import com.chemist.system.tenant.dto.ChemistProfileDTO;
 
-import com.chemist.system.repository.tenant.RoleRepository;
-import com.chemist.system.services.*;
+import com.chemist.system.tenant.repository.RoleRepository;
+import com.chemist.system.tenant.model.Chemist;
+import com.chemist.system.tenant.model.ERole;
+import com.chemist.system.tenant.model.User;
+import com.chemist.system.tenant.model.UserRole;
+import com.chemist.system.tenant.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -97,7 +100,7 @@ public class TenantDatabaseService {
         admin.setEmail(chemist.getEmail());
         admin.setPhoneNo(chemist.getPhone());
         admin.setPassword(encoder.encode(chemist.getChemistCode()));
-        admin.setChemistId(String.valueOf(chemist.getChemistId()));
+        admin.setChemistId(Long.valueOf(String.valueOf(chemist.getChemistId())));
         admin.setChemistName(chemist.getChemistName());
         Set<UserRole> roles = new HashSet<>();
         UserRole adminRole = roleRepository.findByName(String.valueOf(ERole.ADMIN))
