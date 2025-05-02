@@ -1,18 +1,17 @@
-package com.chemist.system.models;
+package com.chemist.system.master.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "master_users")
 public class MasterUser {
     @Id
@@ -20,6 +19,7 @@ public class MasterUser {
     private Long id;
     private String phoneNo;
     private String password;
+    private String username;
     private String firstName;
     private String lastName;
     private String email;

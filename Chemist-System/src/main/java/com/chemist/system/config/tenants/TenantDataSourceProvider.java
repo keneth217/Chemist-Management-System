@@ -1,8 +1,9 @@
 package com.chemist.system.config.tenants;
 
-import com.chemist.system.models.Chemist;
-import com.chemist.system.services.ChemistService;
+import com.chemist.system.tenant.model.Chemist;
+import com.chemist.system.tenant.service.ChemistService;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
@@ -16,6 +17,7 @@ public class TenantDataSourceProvider {
 
     private final ChemistService chemistService;
     private final Map<Object, Object> tenantDataSources = new ConcurrentHashMap<>();
+    @Getter
     private final DataSource defaultDataSource;
     private final String tenantUrlPattern;
     private final String username;
@@ -65,10 +67,6 @@ public class TenantDataSourceProvider {
 
     public Map<Object, Object> getAllDataSources() {
         return tenantDataSources;
-    }
-
-    public DataSource getDefaultDataSource() {
-        return defaultDataSource;
     }
 
     public void createDataSourceForTenant(Chemist chemist) {
