@@ -1,7 +1,7 @@
-package com.chemist.system.repository.tenant;
+package com.chemist.system.tenant.repository;
 
 
-import com.chemist.system.models.UserRole;
+import com.chemist.system.tenant.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
