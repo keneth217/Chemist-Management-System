@@ -1,3 +1,3 @@
-package com.chemist.system.models;
+package com.chemist.system.tenant.model;
 
 public enum PaymentMethod { CASH, CARD, UPI }
