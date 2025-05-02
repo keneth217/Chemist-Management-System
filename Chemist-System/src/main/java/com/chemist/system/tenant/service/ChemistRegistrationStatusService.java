@@ -1,5 +1,5 @@
 
-package com.chemist.system.services;
+package com.chemist.system.tenant.service;
 
 import org.springframework.stereotype.Service;
 
