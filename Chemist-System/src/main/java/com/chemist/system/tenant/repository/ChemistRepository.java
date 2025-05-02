@@ -1,6 +1,6 @@
-package com.chemist.system.repository.tenant;
+package com.chemist.system.tenant.repository;
 
-import com.chemist.system.models.Chemist;
+import com.chemist.system.tenant.model.Chemist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
