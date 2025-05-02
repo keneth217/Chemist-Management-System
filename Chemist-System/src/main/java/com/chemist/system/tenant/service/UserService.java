@@ -1,6 +1,6 @@
-package com.chemist.system.services;
+package com.chemist.system.tenant.service;
 
-import com.chemist.system.models.User;
+import com.chemist.system.tenant.model.User;
 import org.springframework.stereotype.Service;
 
 @Service
