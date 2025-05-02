@@ -1,4 +1,4 @@
-package com.chemist.system.dto;
+package com.chemist.system.tenant.dto;
 
 import lombok.Getter;
 import lombok.Setter;
