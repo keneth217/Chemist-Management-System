@@ -1,4 +1,4 @@
-package com.chemist.system.models;
+package com.chemist.system.tenant.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +38,7 @@ public class User {
     private Set<UserRole> roles = new HashSet<>();
 
     @Column(name = "chemist_id")
-    private String chemistId;
+    private Long chemistId;
 
     @Column(name = "chemist_name")
     private String chemistName;
