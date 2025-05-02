@@ -1,8 +1,8 @@
-package com.chemist.system.services;
+package com.chemist.system.tenant.service;
 
-import com.chemist.system.dto.ChemistProfileDTO;
-import com.chemist.system.models.Chemist;
-import com.chemist.system.repository.tenant.ChemistRepository;
+import com.chemist.system.tenant.dto.ChemistProfileDTO;
+import com.chemist.system.tenant.model.Chemist;
+import com.chemist.system.tenant.repository.ChemistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
