@@ -5,16 +5,15 @@ import com.chemist.system.security.security.jwt.AuthEntryPointJwt;
 import com.chemist.system.security.security.jwt.AuthTokenFilter;
 import com.chemist.system.security.security.jwt.JwtUtils;
 import com.chemist.system.security.security.userServices.UserDetailsServiceImpl;
-import com.chemist.system.services.ChemistService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,28 +21,32 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtUtils jwtUtils;
-    private final ChemistService chemistService;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final PreAuthFilter preAuthFilter;
 
     public WebSecurityConfig(AuthEntryPointJwt unauthorizedHandler,
                              JwtUtils jwtUtils,
-                             @Lazy ChemistService chemistService) {
+                             UserDetailsServiceImpl userDetailsService,
+                             PreAuthFilter preAuthFilter) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtUtils = jwtUtils;
-        this.chemistService = chemistService;
+        this.userDetailsService = userDetailsService;
+        this.preAuthFilter = preAuthFilter;
     }
 
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter(@Lazy UserDetailsServiceImpl userDetailsService) {
-        return new AuthTokenFilter(jwtUtils, userDetailsService, chemistService);
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetailsService) {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -61,31 +64,27 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           @Lazy UserDetailsServiceImpl userDetailsService,
-                                           AuthTokenFilter authTokenFilter) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new PreAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/api/auth/**",
-                                "/api/students/active",
-                                "/api/school/settings/name",
-                                "/api/admin/auth/**",
-                                "/api/admin/users/forgot_password",
-                                "/api/admin/users/reset_password",
-                                "/api/users/forgot_password",
-                                "/api/users/reset_password",
-                                "/error"
+                                "/api/chemist/test/**",
+                                "/api/chemist/create/**",
+                                "/api/master/login",
+                                "/error",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authenticationProvider(userDetailsService))
-                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(preAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
