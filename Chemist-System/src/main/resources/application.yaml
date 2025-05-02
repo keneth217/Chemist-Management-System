@@ -48,7 +48,7 @@ spring:
 
 chemist:
   app:
-    jwtSecret: eifejivjedcmo,ev,epfkeovkeovmev
+    jwtSecret: VGhpcyBpcyBhIHNlY3VyZSAyNTYtYml0IEJhc2U2NCBlbmNvZGVkIHNlY3JldCE=
     jwtExpirationMs: 86400000
     jwtRefreshExpirationMs: 604800000
 app:
