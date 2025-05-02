@@ -29,48 +29,7 @@ public class TokenRefreshController {
 
     @PostMapping("/refreshtoken")
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-
-        try {
-            // Validate the refresh token
-            if (jwtUtils.validateJwtToken(requestRefreshToken)) {
-                String phoneNo = jwtUtils.getUserNameFromJwtToken(requestRefreshToken);
-                
-                // Load user details to create new authentication
-                UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNo);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                
-                // Generate new access token
-                String newToken = jwtUtils.generateJwtToken(authentication);
-                
-                // Optionally generate new refresh token (rotate refresh tokens)
-                String newRefreshToken = jwtUtils.generateRefreshToken(authentication);
-
-                // Get additional user details
-                UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetails;
-                List<String> roles = userDetailsImpl.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList());
-
-                return ResponseEntity.ok(new JwtResponse(
-                        newToken,
-                        newRefreshToken,
-                        "Bearer",
-                        userDetailsImpl.getId(),
-                        userDetailsImpl.getUsername(),
-                        userDetailsImpl.getPhoneNo(),
-                        userDetailsImpl.getPhoneNo(),
-                        userDetailsImpl.getChemist(),
-                        roles,
-                        userDetailsImpl.getChemistId()
-
-                ));
-            }
-        } catch (Exception e) {
-        }
-
-        return ResponseEntity.badRequest().body("Invalid refresh token");
+        return null;
     }
 }
 
