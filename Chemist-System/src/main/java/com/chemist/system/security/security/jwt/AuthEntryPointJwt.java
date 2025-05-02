@@ -27,7 +27,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
         if (cause instanceof ChemistNotActivatedException) {
             logger.error("Access denied: {} - {}", cause.getMessage(), request.getRequestURI());
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Error: School is deactivated. Contact admin.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Error: Chemist is deactivated. Contact admin.");
         } else if (cause instanceof TenantNotResolvedException.ExpiredJwtException) {
             logger.error("JWT token is expired: {} - {}", authException.getMessage(), request.getRequestURI());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Token expired. Please refresh your token.");
