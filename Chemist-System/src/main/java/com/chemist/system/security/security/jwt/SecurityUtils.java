@@ -1,8 +1,8 @@
 package com.chemist.system.security.security.jwt;
 
 
-import com.chemist.system.models.User;
-import com.chemist.system.repository.tenant.UserRepository;
+import com.chemist.system.tenant.model.User;
+import com.chemist.system.tenant.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
