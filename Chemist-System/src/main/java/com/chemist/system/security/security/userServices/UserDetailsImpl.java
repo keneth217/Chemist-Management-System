@@ -1,8 +1,9 @@
 package com.chemist.system.security.security.userServices;
 
-import com.chemist.system.models.Chemist;
-import com.chemist.system.models.MasterUser;
-import com.chemist.system.models.User;
+import com.chemist.system.master.model.MasterUser;
+import com.chemist.system.tenant.model.Chemist;
+import com.chemist.system.tenant.model.User;
+import com.chemist.system.tenant.model.UserRole;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,12 +23,12 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private Chemist chemist;
     private String chemistId;
+    private String userType;
+    private UserRole userRole;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user, Chemist chemist) {
-        Set<String> roles = new HashSet<>(user.getUserTypes());
-
-        List<GrantedAuthority> authorities = roles.stream()
+        List<GrantedAuthority> authorities = user.getUserTypes().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
 
@@ -37,25 +38,24 @@ public class UserDetailsImpl implements UserDetails {
                 .phoneNo(user.getPhoneNo())
                 .password(user.getPassword())
                 .chemist(chemist)
-                .chemistId(user.getChemistId())
+                .chemistId(String.valueOf(user.getChemistId()))
                 .authorities(authorities)
+                .userRole((UserRole) user.getRoles())
                 .build();
     }
 
     public static UserDetailsImpl buildForMasterUser(MasterUser user) {
-        Set<String> roles = Collections.singleton(user.getUserTypes().toString());
-
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole())
+        );
 
         return UserDetailsImpl.builder()
                 .id(user.getId())
-                .username(user.getFirstName())
+                .username(user.getUsername())
                 .phoneNo(user.getPhoneNo())
                 .password(user.getPassword())
                 .chemist(null)
-                .chemistId(String.valueOf(user.getId()))
+                .chemistId(null)
                 .authorities(authorities)
                 .build();
     }
